@@ -37,7 +37,7 @@ class Maze
 
 		@maze.each_with_index {|row,i|
 			cur_row = ""
-			if i%2 == 0
+			if i.even?
 				row.each_with_index {|el,j|
 					cur_row << chars[(j%2+1)*@maze[i][j]]
 				}
