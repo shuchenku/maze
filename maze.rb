@@ -81,12 +81,8 @@ test.display()
 
 solver = test.solve(1,1,4,4)
 
-puts solver.ns_wall
-
 inter = solver.dijkstra2_lite(1,1,4,4)
 
-puts inter.size
-puts inter.class
 
 inter.each {|el|
 	puts el

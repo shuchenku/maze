@@ -36,72 +36,63 @@ class MazeSolver
 	end
 
 	def dijkstra2_lite(begX,begY,endX,endY)
+		
 		begset = Set.new [[begX,begY]]
 		endset = Set.new [[endX,endY]]
-		begnew = Set.new [[begX,begY]]
-		endnew = Set.new [[endX,endY]]
 
 		while begset.intersection(endset).empty?
 
-		begtmp = Set.new
-		endtmp = Set.new
+			begnew = Set.new begset
+			endnew = Set.new endset
 			begsize = begset.size
 			endsize = endset.size
 
 			begnew.each {|el|
 			 	unless @ew_wall[el[0]-1][el[1]-1] == 1 || el[1] == @col
 			 		begset.add([el[0],el[1]+1])
-					begtmp.add([el[0],el[1]+1])
 				end
 
 				unless @ew_wall[el[0]-1][el[1]-2] == 1 || el[1] == 1
 					begset.add([el[0],el[1]-1])
-					begtmp.add([el[0],el[1]-1])
 				end
 
 				unless @ns_wall[el[1]-1][el[0]-1] == 1 || el[0] == @row
 			 		begset.add([el[0]+1,el[1]])
-					begtmp.add([el[0]+1,el[1]])
 				end
 
 				unless @ns_wall[el[1]-1][el[0]-2] == 1 || el[0] == 1
 					begset.add([el[0]-1,el[1]])
-					begtmp.add([el[0]-1,el[1]])
 				end
 			}
 
-			begnew.clear()
-			begnew.merge(begtmp)
+			begnew = begset - begnew
 
 			endnew.each {|el|
 
 				unless @ew_wall[el[0]-1][el[1]-1] == 1 || el[1] == @col
 			 		endset.add([el[0],el[1]+1])
-					endtmp.add([el[0],el[1]+1])
 				end
 
 				unless @ew_wall[el[0]-1][el[1]-2] == 1 || el[1] == 1
 					endset.add([el[0],el[1]-1])
-					endtmp.add([el[0],el[1]-1])
 				end
 
 				unless @ns_wall[el[1]-1][el[0]-1] == 1 || el[0] == @row
 			 		endset.add([el[0]+1,el[1]])
-					endtmp.add([el[0]+1,el[1]])
 				end
 
 				unless @ns_wall[el[1]-1][el[0]-2] == 1 || el[0] == 1
 					endset.add([el[0]-1,el[1]])
-					endtmp.add([el[0]-1,el[1]])
 				end
 			}
-			endnew.clear()
-			endnew.merge(endtmp)
 
-			if begset.size == begsize && endset.size == endsize
+			endnew = endset - endnew
+
+			if begnew.empty? || endnew.empty?
 				return Set.new
 			end
 		end
+
 		return begset.intersection(endset)
 	end
 	
