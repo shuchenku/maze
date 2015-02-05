@@ -1,3 +1,5 @@
+require './maze_solver.rb'
+
 class Maze
 
 	def initialize(m,n)
@@ -39,16 +41,29 @@ class Maze
 			cur_row = ""
 			if i.even?
 				row.each_with_index {|el,j|
-					cur_row << chars[(j%2+1)*@maze[i][j]]
+					cur_row << chars[(j%2+1)*el]
 				}
 				puts cur_row
 			else
 				row.each_with_index {|el,j|
-					cur_row << chars[3*@maze[i][j]]
+					cur_row << chars[3*el]
 				}
 				puts cur_row
 			end
 		}
+
+	end
+
+	def solve(begX,begY,endX,endY)
+
+		lifesaver = MazeSolver.new(@maze)
+		lifesaver.get_walls()
+
+		return lifesaver
+
+	end
+
+	def trace()
 
 	end
 
@@ -60,9 +75,22 @@ myStr = "11111111110001000111101010110001010110111010110000010111101110110000010
 
 test = Maze.new(4,4)
 
-test.load()
+test.load(myStr)
 
 test.display()
+
+solver = test.solve(1,1,4,4)
+
+puts solver.ns_wall
+
+inter = solver.dijkstra2_lite(1,1,4,4)
+
+puts inter.size
+puts inter.class
+
+inter.each {|el|
+	puts el
+}
 
 
 
