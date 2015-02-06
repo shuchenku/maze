@@ -11,14 +11,20 @@ class MazeSolver
 		@col = (maze[0].size-1)/2
 		@ns_wall = []
 		@ew_wall = []
+		@visited = Array.new(@row) { Array.new(@col) {0}}
 	end
 
 	def solve(begX,begY,endX,endY)
 		get_walls()
 
+		mid = search(begX,begY,endX,endY)
+		begroute = [[begX,begY]]
+		endroute = [[endX,endY]]
 
+		if mid.empty?
+			return mid
+		end
 	end
-
 
 	def get_walls()
 
@@ -35,7 +41,7 @@ class MazeSolver
 
 	end
 
-	def dijkstra2_lite(begX,begY,endX,endY)
+	def search(begX,begY,endX,endY,trace = nil)
 		
 		begset = Set.new [[begX,begY]]
 		endset = Set.new [[endX,endY]]
@@ -44,46 +50,15 @@ class MazeSolver
 
 			begnew = Set.new begset
 			endnew = Set.new endset
-			begsize = begset.size
-			endsize = endset.size
 
 			begnew.each {|el|
-			 	unless @ew_wall[el[0]-1][el[1]-1] == 1 || el[1] == @col
-			 		begset.add([el[0],el[1]+1])
-				end
-
-				unless @ew_wall[el[0]-1][el[1]-2] == 1 || el[1] == 1
-					begset.add([el[0],el[1]-1])
-				end
-
-				unless @ns_wall[el[1]-1][el[0]-1] == 1 || el[0] == @row
-			 		begset.add([el[0]+1,el[1]])
-				end
-
-				unless @ns_wall[el[1]-1][el[0]-2] == 1 || el[0] == 1
-					begset.add([el[0]-1,el[1]])
-				end
+				begset.merge(find_next(el))
 			}
 
 			begnew = begset - begnew
 
 			endnew.each {|el|
-
-				unless @ew_wall[el[0]-1][el[1]-1] == 1 || el[1] == @col
-			 		endset.add([el[0],el[1]+1])
-				end
-
-				unless @ew_wall[el[0]-1][el[1]-2] == 1 || el[1] == 1
-					endset.add([el[0],el[1]-1])
-				end
-
-				unless @ns_wall[el[1]-1][el[0]-1] == 1 || el[0] == @row
-			 		endset.add([el[0]+1,el[1]])
-				end
-
-				unless @ns_wall[el[1]-1][el[0]-2] == 1 || el[0] == 1
-					endset.add([el[0]-1,el[1]])
-				end
+				endset.merge(find_next(el))
 			}
 
 			endnew = endset - endnew
@@ -95,6 +70,35 @@ class MazeSolver
 
 		return begset.intersection(endset)
 	end
+
+
+	def find_next(coordinate,trace = nil)
+
+		next_cells = Set.new
+		# check left
+		unless @ew_wall[coordinate[0]-1][coordinate[1]-1] == 1 || coordinate[1] == @col
+	 		next_cells.add([coordinate[0],coordinate[1]+1])
+		end
+
+		# check right
+		unless @ew_wall[coordinate[0]-1][coordinate[1]-2] == 1 || coordinate[1] == 1
+			next_cells.add([coordinate[0],coordinate[1]-1])
+		end
+
+		# check down
+		unless @ns_wall[coordinate[1]-1][coordinate[0]-1] == 1 || coordinate[0] == @row
+	 		next_cells.add([coordinate[0]+1,coordinate[1]])
+		end
+
+		# check up
+		unless @ns_wall[coordinate[1]-1][coordinate[0]-2] == 1 || coordinate[0] == 1
+			next_cells.add([coordinate[0]-1,coordinate[1]])
+		end
+
+		return next_cells
+	end
+
+
 	
 end
 
