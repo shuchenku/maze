@@ -11,7 +11,6 @@ class MazeSolver
 		@col = (maze[0].size-1)/2
 		@ns_wall = []
 		@ew_wall = []
-		@visited = Array.new(@row) { Array.new(@col) {0}}
 	end
 
 	def solve(begX,begY,endX,endY)
@@ -45,11 +44,10 @@ class MazeSolver
 		
 		begset = Set.new [[begX,begY]]
 		endset = Set.new [[endX,endY]]
+		begnew = Set.new begset
+		endnew = Set.new endset
 
 		while begset.intersection(endset).empty?
-
-			begnew = Set.new begset
-			endnew = Set.new endset
 
 			begnew.each {|el|
 				begset.merge(find_next(el))
@@ -96,6 +94,10 @@ class MazeSolver
 		end
 
 		return next_cells
+	end
+
+	def to_string(x,y)
+		return "("<<x.to_s<<","<<y.to_s<<")"
 	end
 
 

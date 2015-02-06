@@ -81,7 +81,7 @@ test.display()
 
 solver = test.solve(1,1,4,4)
 
-inter = solver.dijkstra2_lite(1,1,4,4)
+inter = solver.search(1,1,3,3)
 
 
 inter.each {|el|
