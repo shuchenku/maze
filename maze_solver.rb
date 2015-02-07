@@ -11,18 +11,12 @@ class MazeSolver
 		@col = (maze[0].size-1)/2
 		@ns_wall = []
 		@ew_wall = []
+		@yarn = Hash.new
+		get_walls()
 	end
 
 	def solve(begX,begY,endX,endY)
-		get_walls()
-
-		mid = search(begX,begY,endX,endY)
-		begroute = [[begX,begY]]
-		endroute = [[endX,endY]]
-
-		if mid.empty?
-			return mid
-		end
+		return search(begX,begY,endX,endY)
 	end
 
 	def get_walls()
@@ -40,67 +34,75 @@ class MazeSolver
 
 	end
 
-	def search(begX,begY,endX,endY,trace = nil)
+	def search(begX,begY,endX,endY)
 		
-		begset = Set.new [[begX,begY]]
-		endset = Set.new [[endX,endY]]
-		begnew = Set.new begset
-		endnew = Set.new endset
+		visited = Set.new [[begX,begY]]
+		newly_visited = Set.new visited	
+		tmp = Set.new
 
-		while begset.intersection(endset).empty?
+		while !visited.include?([endX,endY])
 
-			begnew.each {|el|
-				begset.merge(find_next(el))
+			newly_visited.each {|el|
+				tmp.merge(find_next(el))
 			}
 
-			begnew = begset - begnew
+			newly_visited.clear()
+			newly_visited.merge(tmp)
+			visited.merge(tmp)
+			tmp.clear()
 
-			endnew.each {|el|
-				endset.merge(find_next(el))
-			}
-
-			endnew = endset - endnew
-
-			if begnew.empty? || endnew.empty?
-				return Set.new
+			if newly_visited.empty?
+				return false
 			end
 		end
 
-		return begset.intersection(endset)
+		return true
+
 	end
 
 
 	def find_next(coordinate,trace = nil)
 
+		x = coordinate[0]
+		y = coordinate[1]
+
 		next_cells = Set.new
 		# check left
-		unless @ew_wall[coordinate[0]-1][coordinate[1]-1] == 1 || coordinate[1] == @col
-	 		next_cells.add([coordinate[0],coordinate[1]+1])
+		unless @ew_wall[x-1][y-1] == 1 || y == @col || @yarn.has_key?([x,y+1])
+	 		next_cells.add([x,y+1])
+	 		@yarn[[x,y+1]] = [x,y]
 		end
 
 		# check right
-		unless @ew_wall[coordinate[0]-1][coordinate[1]-2] == 1 || coordinate[1] == 1
-			next_cells.add([coordinate[0],coordinate[1]-1])
+		unless @ew_wall[x-1][y-2] == 1 || y == 1 || @yarn.has_key?([x,y-1])
+			next_cells.add([x,y-1])
+			@yarn[[x,y-1]] = [x,y]
 		end
 
 		# check down
-		unless @ns_wall[coordinate[1]-1][coordinate[0]-1] == 1 || coordinate[0] == @row
-	 		next_cells.add([coordinate[0]+1,coordinate[1]])
+		unless @ns_wall[y-1][x-1] == 1 || x == @row || @yarn.has_key?([x+1,y])
+	 		next_cells.add([x+1,y])
+	 		@yarn[[x+1,y]] = [x,y]
 		end
 
 		# check up
-		unless @ns_wall[coordinate[1]-1][coordinate[0]-2] == 1 || coordinate[0] == 1
-			next_cells.add([coordinate[0]-1,coordinate[1]])
+		unless @ns_wall[y-1][x-2] == 1 || x == 1 || @yarn.has_key?([x-1,y])
+			next_cells.add([x-1,y])
+			@yarn[[x-1,y]] = [x,y]
 		end
 
 		return next_cells
 	end
 
-	def to_string(x,y)
-		return "("<<x.to_s<<","<<y.to_s<<")"
+	def trace(begX,begY,endX,endY)
+		
+		if search(begX,begY,endX,endY)
+			return @yarn
+		else
+			return false
+		end
+		
 	end
-
-
 	
 end
 

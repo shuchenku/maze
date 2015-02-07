@@ -35,18 +35,19 @@ class Maze
 
 	def display()
 
-		chars = [' ','+','-','|']
+		evenchars = [' ','+','-']
+		oddchars = [' ','|','o']
 
 		@maze.each_with_index {|row,i|
 			cur_row = ""
 			if i.even?
 				row.each_with_index {|el,j|
-					cur_row << chars[(j%2+1)*el]
+					cur_row << evenchars[(j%2+1)*el]
 				}
 				puts cur_row
 			else
 				row.each_with_index {|el,j|
-					cur_row << chars[3*el]
+					cur_row << oddchars[(el)]
 				}
 				puts cur_row
 			end
@@ -56,15 +57,25 @@ class Maze
 
 	def solve(begX,begY,endX,endY)
 
-		lifesaver = MazeSolver.new(@maze)
-		lifesaver.get_walls()
+		maze_solver = MazeSolver.new(@maze)
 
-		return lifesaver
+		return maze_solver.solve(begX,begY,endX,endY)
 
 	end
 
-	def trace()
+	def trace(begX,begY,endX,endY)
 
+		maze_solver = MazeSolver.new(@maze)
+		yarn = maze_solver.trace(begX,begY,endX,endY)
+		@maze[(begX-1)*2+1][(begY-1)*2+1] = 2
+		cur = [endX,endY]
+
+		while (cur != [begX,begY])
+			@maze[(cur[0]-1)*2+1][(cur[1]-1)*2+1] = 2
+			cur = yarn[cur]
+		end
+
+		display()
 	end
 
 end
@@ -79,14 +90,11 @@ test.load(myStr)
 
 test.display()
 
-solver = test.solve(1,1,4,4)
-
-inter = solver.search(1,1,3,3)
+test.trace(2,2,3,3)
 
 
-inter.each {|el|
-	puts el
-}
+
+
 
 
 
