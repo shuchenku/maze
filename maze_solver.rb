@@ -43,8 +43,7 @@ class MazeSolver
 				tmp.merge(find_next(el))
 			}
 
-			newly_visited.clear()
-			newly_visited.merge(tmp)
+			newly_visited = tmp.dup
 			visited.merge(tmp)
 			tmp.clear()
 
