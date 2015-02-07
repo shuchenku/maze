@@ -13,9 +13,6 @@ class Maze
 	def load(str = nil)
 		if str.nil?
 			@maze_str = "111111111100010001111010101100010101101110101100000101111011101100000101111111111"
-			# (0..@row*@col-1).each do 
-			# 	@maze_str << rand.round
-			# end
 		else
 			@maze_str = str
 		end
@@ -58,9 +55,7 @@ class Maze
 	def solve(begX,begY,endX,endY)
 
 		maze_solver = MazeSolver.new(@maze)
-
 		return maze_solver.solve(begX,begY,endX,endY)
-
 	end
 
 	def trace(begX,begY,endX,endY)
@@ -90,7 +85,7 @@ test.load(myStr)
 
 test.display()
 
-test.trace(2,2,3,3)
+test.trace(1,1,4,4)
 
 
 

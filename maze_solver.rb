@@ -2,9 +2,6 @@ require 'Set'
 
 class MazeSolver
 
-	attr_reader :ns_wall
-	attr_reader :ew_wall
-
 	def initialize(maze)
 		@maze = maze
 		@row = (maze.size-1)/2
@@ -15,8 +12,8 @@ class MazeSolver
 		get_walls()
 	end
 
-	def solve(begX,begY,endX,endY)
-		return search(begX,begY,endX,endY)
+	def solve(begcol,begrow,endcol,endrow)
+		return search(begcol,begrow,endcol,endrow)
 	end
 
 	def get_walls()
@@ -34,13 +31,13 @@ class MazeSolver
 
 	end
 
-	def search(begX,begY,endX,endY)
+	def search(begcol,begrow,endcol,endrow)
 		
-		visited = Set.new [[begX,begY]]
+		visited = Set.new [[begcol,begrow]]
 		newly_visited = Set.new visited	
 		tmp = Set.new
 
-		while !visited.include?([endX,endY])
+		while !visited.include?([endcol,endrow])
 
 			newly_visited.each {|el|
 				tmp.merge(find_next(el))
@@ -63,40 +60,40 @@ class MazeSolver
 
 	def find_next(coordinate,trace = nil)
 
-		x = coordinate[0]
-		y = coordinate[1]
+		r = coordinate[0]
+		d = coordinate[1]
 
 		next_cells = Set.new
 		# check left
-		unless @ew_wall[x-1][y-1] == 1 || y == @col || @yarn.has_key?([x,y+1])
-	 		next_cells.add([x,y+1])
-	 		@yarn[[x,y+1]] = [x,y]
+		unless @ew_wall[r-1][d-1] == 1 || d == @col || @yarn.has_key?([r,d+1])
+	 		next_cells.add([r,d+1])
+	 		@yarn[[r,d+1]] = [r,d]
 		end
 
 		# check right
-		unless @ew_wall[x-1][y-2] == 1 || y == 1 || @yarn.has_key?([x,y-1])
-			next_cells.add([x,y-1])
-			@yarn[[x,y-1]] = [x,y]
+		unless @ew_wall[r-1][d-2] == 1 || d == 1 || @yarn.has_key?([r,d-1])
+			next_cells.add([r,d-1])
+			@yarn[[r,d-1]] = [r,d]
 		end
 
 		# check down
-		unless @ns_wall[y-1][x-1] == 1 || x == @row || @yarn.has_key?([x+1,y])
-	 		next_cells.add([x+1,y])
-	 		@yarn[[x+1,y]] = [x,y]
+		unless @ns_wall[d-1][r-1] == 1 || r == @row || @yarn.has_key?([r+1,d])
+	 		next_cells.add([r+1,d])
+	 		@yarn[[r+1,d]] = [r,d]
 		end
 
 		# check up
-		unless @ns_wall[y-1][x-2] == 1 || x == 1 || @yarn.has_key?([x-1,y])
-			next_cells.add([x-1,y])
-			@yarn[[x-1,y]] = [x,y]
+		unless @ns_wall[d-1][r-2] == 1 || r == 1 || @yarn.has_key?([r-1,d])
+			next_cells.add([r-1,d])
+			@yarn[[r-1,d]] = [r,d]
 		end
 
 		return next_cells
 	end
 
-	def trace(begX,begY,endX,endY)
+	def trace(begcol,begrow,endcol,endrow)
 		
-		if search(begX,begY,endX,endY)
+		if search(begcol,begrow,endcol,endrow)
 			return @yarn
 		else
 			return false
@@ -105,7 +102,6 @@ class MazeSolver
 	end
 	
 end
-
 
 
 
