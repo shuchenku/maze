@@ -29,7 +29,6 @@ class MazeMaker
 		}			
 	end
 
-
 	# Start with a grid full of walls.
 	# Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
 	# While there are walls in the list:
@@ -99,10 +98,18 @@ class MazeMaker
 		ri = wall[0]
 		ci = wall[1]
 
-		if wall[2] == "v" && ci<@col-1
-			@maze[ri*2+1][ci*2+2] = 0
-		elsif wall[2] == "h" && ri<@row-1
-			@maze[ri*2+2][ci*2+1] = 0
+		if wall[2] == "v"
+			if ci<@col-1
+				@maze[ri*2+1][ci*2+2] = 0
+			else
+				@maze[ri*2+2][ci*2+1] = 0
+			end
+		elsif wall[2] == "h"
+			if ri<@row-1
+				@maze[ri*2+2][ci*2+1] = 0
+			else
+				@maze[ri*2+1][ci*2+2] = 0
+			end
 		end
 
 	end

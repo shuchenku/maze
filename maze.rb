@@ -80,7 +80,6 @@ class Maze
 		new_maze = MazeMaker.new(@row,@col)
 		new_str = new_maze.make_maze()
 		load(new_str)
-		display()
 	end
 
 end
@@ -88,22 +87,30 @@ end
 
 myStr = "111111111100010001111010101100010101101110101100000101111011101100000101111111111"
 
-
 test = Maze.new(4,4)
 
 test.load(myStr)
 
+puts "display initial maze:"
 test.display
 
+puts "show trace from (1,0) to (3,3):"
 test.trace(1,0,3,3)
 
+puts "show trace from (2,0) to (1,3):"
 test.trace(2,0,1,3)
 
+puts "display new maze:"
+test.redesign
 test.display
 
-test.redesign
+puts "show trace from (0,0) to (3,3):"
+test.trace(0,0,3,3)
 
-# test.trace(1,1,4,4)
+puts "show trace from (2,0) to (1,3):"
+test.trace(2,0,1,3)
+
+
 
 
 
