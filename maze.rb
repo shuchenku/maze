@@ -1,5 +1,5 @@
 require './maze_solver.rb'
-require './maze_generator.rb'
+require './maze_maker.rb'
 
 class Maze
 
@@ -12,12 +12,9 @@ class Maze
 
 
 	def load(str = nil)
-		if str.nil?
-			@maze_str = "111111111100010001111010101100010101101110101100000101111011101100000101111111111"
-		else
-			@maze_str = str
-		end
 
+		@maze_str = str.nil? ? "111111111100010001111010101100010101101110101100000101111011101100000101111111111" : str
+	
 		@maze = []
 		idx = 0
 		map_row = @row*2+1
@@ -32,28 +29,23 @@ class Maze
 
 	def display(trace = nil)
 
-		if trace.nil?
-			trace = @maze
-		end
+		trace = @maze unless !trace.nil?
 
 		evenchars = [' ','+','-']
 		oddchars = [' ','|','o']
 
-		trace.each_with_index {|row,i|
+		(0..trace.size-1).step(2).each {|r|
 			cur_row = ""
-			if i.even?
-				row.each_with_index {|el,j|
-					cur_row << evenchars[(j%2+1)*el]
-				}
-				puts cur_row
-			else
-				row.each_with_index {|el,j|
-					cur_row << oddchars[(el)]
-				}
-				puts cur_row
-			end
+			trace[r].each_with_index {|el,c|
+				cur_row << evenchars[(c%2+1)*el]
+			}
+			puts cur_row
+			cur_row = ""
+			trace[r+1].each_with_index {|el,j|
+				cur_row << oddchars[(el)]
+			}
+			puts cur_row
 		}
-
 	end
 
 	def solve(begX,begY,endX,endY)
@@ -67,14 +59,14 @@ class Maze
 
 		solution = Marshal.load(Marshal.dump(@maze))
 		maze_solver = MazeSolver.new(solution)
-		yarn = maze_solver.trace(begX,begY,endX,endY)
+		yarn = maze_solver.trace(begY,begX,endY,endX)
 
 		if yarn
-			solution[(begX-1)*2+1][(begY-1)*2+1] = 2
-			cur = [endX,endY]
+			solution[(begY)*2+1][(begX)*2+1] = 2
+			cur = [endY,endX]
 
-			while (cur != [begX,begY])
-				solution[(cur[0]-1)*2+1][(cur[1]-1)*2+1] = 2
+			while (cur != [begY,begX])
+				solution[(cur[0])*2+1][(cur[1])*2+1] = 2
 				cur = yarn[cur]
 			end
 
@@ -103,15 +95,15 @@ test.load(myStr)
 
 test.display
 
-test.trace(1,1,4,4)
+test.trace(1,0,3,3)
 
-test.trace(2,2,3,3)
+test.trace(2,0,1,3)
 
 test.display
 
 test.redesign
 
-test.trace(1,1,4,4)
+# test.trace(1,1,4,4)
 
 
 

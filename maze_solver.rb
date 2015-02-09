@@ -64,25 +64,25 @@ class MazeSolver
 
 		next_cells = Set.new
 		# check left
-		unless @ew_wall[r-1][d-1] == 1 || d == @col || @yarn.has_key?([r,d+1])
+		unless @ew_wall[r][d] == 1 || d == @col-1 || @yarn.has_key?([r,d+1])
 	 		next_cells.add([r,d+1])
 	 		@yarn[[r,d+1]] = [r,d]
 		end
 
 		# check right
-		unless @ew_wall[r-1][d-2] == 1 || d == 1 || @yarn.has_key?([r,d-1])
+		unless @ew_wall[r][d-1] == 1 || d == 0 || @yarn.has_key?([r,d-1])
 			next_cells.add([r,d-1])
 			@yarn[[r,d-1]] = [r,d]
 		end
 
 		# check down
-		unless @ns_wall[d-1][r-1] == 1 || r == @row || @yarn.has_key?([r+1,d])
+		unless @ns_wall[d][r] == 1 || r == @row-1 || @yarn.has_key?([r+1,d])
 	 		next_cells.add([r+1,d])
 	 		@yarn[[r+1,d]] = [r,d]
 		end
 
 		# check up
-		unless @ns_wall[d-1][r-2] == 1 || r == 1 || @yarn.has_key?([r-1,d])
+		unless @ns_wall[d][r-1] == 1 || r == 0 || @yarn.has_key?([r-1,d])
 			next_cells.add([r-1,d])
 			@yarn[[r-1,d]] = [r,d]
 		end
@@ -90,13 +90,9 @@ class MazeSolver
 		return next_cells
 	end
 
-	def trace(begcol,begrow,endcol,endrow)
-		
-		if search(begcol,begrow,endcol,endrow)
-			return @yarn
-		else
-			return false
-		end
+	def trace(begcol,begrow,endcol,endrow)	
+		search(begcol,begrow,endcol,endrow)? result = @yarn : result = false
+		return result
 		
 	end
 	
