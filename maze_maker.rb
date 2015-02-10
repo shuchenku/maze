@@ -12,13 +12,11 @@ class MazeMaker
 		return to_string()
 	end
 
-
 	def fill_with_walls()
 		@maze[0].fill(1)
 		@maze[-1].fill(1)
 		set_blockade()
 	end
-
 
 	def set_blockade()
 	 	(1..@maze.size-1).step(2).each {|row|
@@ -31,7 +29,7 @@ class MazeMaker
 
 	# Start with a grid full of walls.
 	# Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
-	# While there are walls in the list:
+	# While there are walls not yet visited:
 	# 		Pick a random wall from the list. If the cell on the opposite side isn't in the maze yet:
 	# 				Make the wall a passage and mark the cell on the opposite side as part of the maze.
 	# 				Add the neighboring walls of the cell to the wall list.
@@ -65,16 +63,8 @@ class MazeMaker
 	end
 
 	def choose_from_set(set)
-
-		el = []
-		while true
-			idx = rand(0..set.size-1)
-			el = set.to_a[idx]
-
-			if !el.nil?
-				break
-			end
-		end
+		idx = rand(0..set.size-2)
+		el = set.delete(nil).to_a[idx]
 		return el
 	end
 
@@ -95,87 +85,41 @@ class MazeMaker
 
 	def break_wall(wall)
 		
-		ri = wall[0]
-		ci = wall[1]
+		ri = wall[0]*2+1
+		ci = wall[1]*2+1
 
-		if wall[2] == "v"
-			if ci<@col-1
-				@maze[ri*2+1][ci*2+2] = 0
-			else
-				@maze[ri*2+2][ci*2+1] = 0
-			end
-		elsif wall[2] == "h"
-			if ri<@row-1
-				@maze[ri*2+2][ci*2+1] = 0
-			else
-				@maze[ri*2+1][ci*2+2] = 0
-			end
+		if (wall[2] == "v" && wall[1]<@col-1) || (wall[2] == "h" && wall[0]>@row-2)
+			@maze[ri][ci+1] = 0
+		else
+			@maze[ri+1][ci] = 0
 		end
 
 	end
 
 	def wall_above(cell)
 		wall = cell[1]==0? nil:[cell[0],cell[1]-1,"h"]
-		# puts wall_to_string(wall)
 		return wall
 	end
 
 	def wall_below(cell)
 		wall = cell[1]==@row-2? nil:[cell[0],cell[1],"h"]
-		# puts wall_to_string(wall)
 		return wall
 	end
 
 	def wall_left(cell)
 		wall = cell[0]==0? nil:[cell[0]-1,cell[1],"v"]
-		# puts wall_to_string(wall)
 		return wall
 	end
 
 	def wall_right(cell)
 		wall = cell[0]==@col-2? nil:[cell[0],cell[1],"v"]
-		# puts wall_to_string(wall)
 		return wall
 	end
-
-
-	# def wall_to_string(wall)
-	# 	if wall.nil?
-	# 		str = nil
-	# 	else
-	# 		str = "[" + wall[0].to_s + "," + wall[1].to_s + "," + wall[2] + "]"
-	# 	end
-	# 	return str
-	# end
-
-	# def set_orientation(l,r,u,d)
-	# 	# horizontial = 0; vertical = 1
-	# 	orient = (r-l)>(d-u)? 1:0
-	# 	return orient
-	# end
-
-	# def tear_walls(l,r,u,d)
-		
-	# 	orient = set_orientation(l,r,u,d)
-
-	# 	if orient == 1 && r-l>1
-	# 		ci = rand(l+1..r-1)
-	# 		ri = rand(u..d)
-	# 		@maze[ri*2-1][ci*2] = 0 unless ri == @row
-	# 		tear_walls(l,ci,u,d)
-	# 		tear_walls(ci+1,r,u,d)
-	# 	elsif orient == 0 && d-u>1
-	# 		ci = rand(l..r)
-	# 		ri = rand(u+1..d-1)
-	# 		@maze[ri*2][ci*2-1] = 0 unless ci == @col
-	# 		tear_walls(l,r,ri,d)
-	# 		tear_walls(l,r,u,ri)
-	# 	end
 
 	def to_string
 		return @maze.join
 	end
-
+	
 end
 
 

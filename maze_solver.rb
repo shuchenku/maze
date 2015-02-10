@@ -28,7 +28,6 @@ class MazeSolver
 			@ew_wall.push(ewtmp)
 			@ns_wall.push(nstmp)
 		}
-
 	end
 
 	def search(begcol,begrow,endcol,endrow)
@@ -63,13 +62,13 @@ class MazeSolver
 		d = coordinate[1]
 
 		next_cells = Set.new
-		# check left
+		# check right
 		unless @ew_wall[r][d] == 1 || d == @col-1 || @yarn.has_key?([r,d+1])
 	 		next_cells.add([r,d+1])
 	 		@yarn[[r,d+1]] = [r,d]
 		end
 
-		# check right
+		# check left
 		unless @ew_wall[r][d-1] == 1 || d == 0 || @yarn.has_key?([r,d-1])
 			next_cells.add([r,d-1])
 			@yarn[[r,d-1]] = [r,d]
@@ -92,8 +91,7 @@ class MazeSolver
 
 	def trace(begcol,begrow,endcol,endrow)	
 		search(begcol,begrow,endcol,endrow)? result = @yarn : result = false
-		return result
-		
+		return result	
 	end
 	
 end
