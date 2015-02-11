@@ -36,24 +36,16 @@ class MazeMaker
 	# 		Remove the wall from the list.
 
 	def prim()
-		cell_set = Set.new
-		wall_set = Set.new
-
-		init = [0,0]
-		cell_set.add(init)
-
-		new_walls = Set.new [wall_above(init),wall_below(init),wall_left(init),wall_right(init)]
-		wall_set.merge(new_walls)
+		cell_set = Set.new [[0,0]]
+		wall_set = Set.new surrounding_walls([0,0])
 
 		while cell_set.size<@row*@col
 
-			STDOUT.sync = true
 			chosen_wall = choose_from_set(wall_set)
 			new_cell = peek_over_wall(chosen_wall,cell_set) 
 
 			unless new_cell.nil?
-				new_walls = Set.new [wall_above(new_cell),wall_below(new_cell),wall_left(new_cell),wall_right(new_cell)]
-				wall_set.merge(new_walls)
+				wall_set.merge(surrounding_walls(new_cell))
 				cell_set.add(new_cell)
 				wall_set = wall_set.delete(chosen_wall)
 				break_wall(chosen_wall)
@@ -94,6 +86,10 @@ class MazeMaker
 			@maze[ri+1][ci] = 0
 		end
 
+	end
+
+	def surrounding_walls(cell)
+		return [wall_above(cell),wall_below(cell),wall_left(cell),wall_right(cell)]
 	end
 
 	def wall_above(cell)
