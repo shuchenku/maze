@@ -62,18 +62,19 @@ class Maze
 		yarn = maze_solver.trace(begY,begX,endY,endX)
 
 		if yarn
-			solution[(begY)*2+1][(begX)*2+1] = 2
-			cur = [endY,endX]
-
-			while (cur != [begY,begX])
-				solution[(cur[0])*2+1][(cur[1])*2+1] = 2
-				cur = yarn[cur]
-			end
-
+			follow_yarn([endY,endX],[begY,begX],solution,yarn)
 			display(solution)
 		else
 			puts "No way out."
 		end
+	end
+
+	def follow_yarn(cur,endxy,solution,yarn)
+		solution[(cur[0])*2+1][(cur[1])*2+1] = 2
+		if cur == endxy
+			return solution
+		end
+		follow_yarn(yarn[cur],endxy,solution,yarn)
 	end
 
 	def redesign()
